@@ -117,19 +117,26 @@ func (d *Driver) Run(ctx context.Context) error {
 	}
 
 	d.srv = grpc.NewServer(grpc.UnaryInterceptor(logInterceptor))
-	csi.RegisterIdentityServer(d.srv, &identityServer{cfg: d.cfg})
-	if d.cfg.Mode == ModeController || d.cfg.Mode == ModeAll {
-		csi.RegisterControllerServer(d.srv, &controllerServer{cfg: d.cfg, store: d.store})
-	}
-	if d.cfg.Mode == ModeNode || d.cfg.Mode == ModeAll {
-		csi.RegisterNodeServer(d.srv, &nodeServer{cfg: d.cfg})
-	}
+	d.register(d.srv)
 
 	go func() {
 		<-ctx.Done()
 		d.srv.GracefulStop()
 	}()
 	return d.srv.Serve(lis)
+}
+
+// register wires the services selected by d.cfg.Mode onto srv. Split out of
+// Run so a test can register the same driver onto an in-process (bufconn)
+// server instead of a real socket.
+func (d *Driver) register(srv *grpc.Server) {
+	csi.RegisterIdentityServer(srv, &identityServer{cfg: d.cfg})
+	if d.cfg.Mode == ModeController || d.cfg.Mode == ModeAll {
+		csi.RegisterControllerServer(srv, &controllerServer{cfg: d.cfg, store: d.store})
+	}
+	if d.cfg.Mode == ModeNode || d.cfg.Mode == ModeAll {
+		csi.RegisterNodeServer(srv, &nodeServer{cfg: d.cfg})
+	}
 }
 
 func parseEndpoint(endpoint string) (network, addr string, err error) {
