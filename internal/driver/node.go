@@ -121,7 +121,7 @@ func (s *nodeServer) NodeGetVolumeStats(_ context.Context, req *csi.NodeGetVolum
 	if err := unix.Statfs(path, &st); err != nil {
 		return nil, status.Errorf(codes.NotFound, "statfs %s: %v", path, err)
 	}
-	bsize := int64(st.Bsize)
+	bsize := st.Bsize
 	return &csi.NodeGetVolumeStatsResponse{Usage: []*csi.VolumeUsage{
 		{
 			Unit:      csi.VolumeUsage_BYTES,
