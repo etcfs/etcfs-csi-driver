@@ -1,0 +1,14 @@
+apiVersion: v2
+name: etcfs-csi
+description: The EtcFS Container Storage Interface driver — shared ReadWriteMany volumes on a raw block device, coordinated and fenced by EtcFS.
+type: application
+version: 0.1.0
+appVersion: "0.9.0"
+home: https://github.com/MHS-20/EtcFS
+sources:
+  - https://github.com/MHS-20/EtcFS
+keywords:
+  - csi
+  - storage
+  - filesystem
+  - etcd
