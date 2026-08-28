@@ -29,7 +29,7 @@ import (
 
 	clientv3 "go.etcd.io/etcd/client/v3"
 
-	"github.com/etcfs/etcfs/csi/internal/driver"
+	"github.com/etcfs/etcfs-csi-driver/internal/driver"
 	"github.com/etcfs/etcfs/pkg/metadata"
 )
 

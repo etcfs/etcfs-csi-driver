@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - name: Vet
+        run: go vet ./...
+      - name: Build
+        run: go build ./...
+      - name: Test
+        run: go test -race -count=1 ./...
+      - name: Start etcd
+        run: |
+          curl -sL https://github.com/etcd-io/etcd/releases/download/v3.5.18/etcd-v3.5.18-linux-amd64.tar.gz | tar xz
+          sudo mv etcd-v3.5.18-linux-amd64/etcd /usr/local/bin/
+          mkdir -p /tmp/etcd-data-csi
+          etcd --data-dir=/tmp/etcd-data-csi --listen-client-urls=http://127.0.0.1:2381 --advertise-client-urls=http://127.0.0.1:2381 &
+          sleep 3
+      - name: Fence-path integration test
+        env:
+          ETCD_ENDPOINTS: http://127.0.0.1:2381
+        run: go test -race -tags=integration -count=1 -timeout 240s ./...
+      - name: Helm lint
+        run: helm lint deploy/helm/etcfs-csi --set etcd.endpoints=https://etcd:2379
+
+  publish-image:
+    name: Publish container image
+    runs-on: ubuntu-latest
+    needs: [build-test]
+    if: github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+      - name: Log in to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Version
+        id: version
+        run: echo "version=$(git describe --tags --always)" >> "$GITHUB_OUTPUT"
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          build-args: VERSION=${{ steps.version.outputs.version }}
+          push: true
+          tags: |
+            ghcr.io/etcfs/etcfs-csi:${{ steps.version.outputs.version }}
+            ghcr.io/etcfs/etcfs-csi:latest
