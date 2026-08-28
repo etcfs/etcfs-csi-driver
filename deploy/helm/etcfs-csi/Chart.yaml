@@ -4,9 +4,9 @@ description: The EtcFS Container Storage Interface driver — shared ReadWriteMa
 type: application
 version: 0.1.0
 appVersion: "0.9.0"
-home: https://github.com/etcfs/etcfs
+home: https://github.com/etcfs/etcfs-csi-driver
 sources:
-  - https://github.com/etcfs/etcfs
+  - https://github.com/etcfs/etcfs-csi-driver
 keywords:
   - csi
   - storage

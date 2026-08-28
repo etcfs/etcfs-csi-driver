@@ -9,8 +9,9 @@ Split out of the main [etcfs/etcfs](https://github.com/etcfs/etcfs) repository
 driver was preserved in the split.
 
 See [github.com/etcfs/etcfs-docs](https://github.com/etcfs/etcfs-docs) for the
-Kubernetes deployment guide, and `deploy/helm/etcfs-csi` here for the Helm
-chart.
+Kubernetes deployment guide. The Helm chart source is `deploy/helm/etcfs-csi`;
+CI packages and pushes it to `oci://ghcr.io/etcfs/charts/etcfs-csi` on every
+push to main, tagged with the same version as the container image.
 
 ## Layout
 

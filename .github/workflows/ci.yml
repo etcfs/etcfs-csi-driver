@@ -63,3 +63,11 @@ jobs:
           tags: |
             ghcr.io/etcfs/etcfs-csi:${{ steps.version.outputs.version }}
             ghcr.io/etcfs/etcfs-csi:latest
+
+      - name: Package and push Helm chart
+        env:
+          CHART_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          CHART_VERSION="${CHART_VERSION#v}"
+          helm package deploy/helm/etcfs-csi --version "$CHART_VERSION" --app-version "$CHART_VERSION" -d dist
+          helm push "dist/etcfs-csi-${CHART_VERSION}.tgz" oci://ghcr.io/etcfs/charts
