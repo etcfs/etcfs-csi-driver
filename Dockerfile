@@ -7,7 +7,7 @@
 # GOTOOLCHAIN=local, so a builder below it fails outright rather than fetching
 # what the module asks for. The etcfs dependency is what moves it — that module
 # follows its own dependencies' requirements.
-FROM golang:1.26-alpine AS builder
+FROM golang:1.27-alpine AS builder
 
 WORKDIR /build
 COPY . .
