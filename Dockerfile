@@ -3,7 +3,11 @@
 # Build:
 #   docker build -t etcfs-csi --build-arg VERSION=$(git describe --tags --always) .
 
-FROM golang:1.24-alpine AS builder
+# Must stay at or above go.mod's `go` directive: the image sets
+# GOTOOLCHAIN=local, so a builder below it fails outright rather than fetching
+# what the module asks for. The etcfs dependency is what moves it — that module
+# follows its own dependencies' requirements.
+FROM golang:1.26-alpine AS builder
 
 WORKDIR /build
 COPY . .
