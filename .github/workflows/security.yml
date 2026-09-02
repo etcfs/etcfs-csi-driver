@@ -1,0 +1,64 @@
+name: Security
+
+# Mirrors the core repository's workflow, minus the C jobs — this module is Go
+# only. It exists because this repository had no scanning at all, which is how
+# google.golang.org/grpc stayed at v1.66.0 with two advisories reachable from
+# the driver's own code until a dependency upgrade happened to carry the fix.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Monday morning: a week's advisories, reported before the week's work
+    # starts rather than after it. Most of what these catch is a new advisory
+    # against unchanged code, which a push-triggered workflow never sees.
+    - cron: "37 6 * * 1"
+
+permissions:
+  contents: read
+
+env:
+  # The minor go.mod requires, with the patch left to setup-go so it always
+  # installs the newest one. Pointing at go.mod instead pins the exact version
+  # written there — the oldest patch of the release — and govulncheck then
+  # reports every standard-library advisory fixed since against a build nobody
+  # would ship.
+  GO_VERSION: "1.26.x"
+
+jobs:
+  codeql:
+    name: CodeQL (go)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: Initialise CodeQL
+        uses: github/codeql-action/init@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v4
+        with:
+          languages: go
+          queries: security-extended
+      - name: Build
+        run: go build ./...
+      - name: Analyse
+        uses: github/codeql-action/analyze@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v4
+        with:
+          category: /language:go
+
+  govulncheck:
+    name: govulncheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      # GOTOOLCHAIN=auto because this tool's own go.mod may target a newer Go
+      # than the one installed above, and `local` refuses to fetch it.
+      - name: Run govulncheck
+        run: GOTOOLCHAIN=auto go run golang.org/x/vuln/cmd/govulncheck@latest ./...
