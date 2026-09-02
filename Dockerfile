@@ -17,7 +17,7 @@ RUN CGO_ENABLED=0 go build \
     -ldflags="-s -w -X main.version=${VERSION}" \
     -o /usr/local/bin/etcfs-csi ./cmd/etcfs-csi
 
-FROM alpine:3.20
+FROM alpine:3.24
 
 # The node plugin issues bind mounts itself, so it needs no mount helper; only
 # TLS roots for the controller's etcd client.
