@@ -1,7 +1,9 @@
 # etcfs-csi-driver
 
 Kubernetes CSI driver for [EtcFS](https://github.com/etcfs/etcfs) — provisions
-and mounts EtcFS volumes as `ReadWriteMany` `Block` volumes, with fencing
+and mounts EtcFS volumes as `ReadWriteMany` filesystem volumes: each volume is a
+directory of the shared EtcFS mount, bind-mounted into the pod. `Block` mode is
+rejected, since the driver never hands a pod the underlying device. Fencing is
 handled through the core EtcFS fencing protocol.
 
 Split out of the main [etcfs/etcfs](https://github.com/etcfs/etcfs) repository
