@@ -1,33 +1,34 @@
 version: 2
 
-# This repository had none, and that is how google.golang.org/grpc sat at
-# v1.66.0 with two advisories reachable from the driver's own code until an
-# upgrade of the etcfs dependency happened to carry the fix. The core
-# repository's Go module updates do not reach here: etcfs is consumed as a
-# published module, so its dependency bumps only arrive with a new release of
-# it, and everything else this module requires is tracked nowhere else.
+# Monthly, and grouped per ecosystem, so an idle month costs at most three pull
+# requests. Minor and patch updates merge themselves through the merge queue once
+# the required check passes; major ones wait for review
+# (workflows/dependabot-automerge.yml).
 updates:
   - package-ecosystem: gomod
     directory: /
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
     open-pull-requests-limit: 5
     groups:
-      # One pull request for the routine drift, so a genuinely interesting
-      # upgrade is not lost among a dozen patch bumps.
       minor-and-patch:
         update-types: [minor, patch]
 
+  # One pull request for every action: the CodeQL init and analyze steps must
+  # move together, and separate pull requests for them fail CodeQL until the
+  # last one lands.
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
 
-  # The builder image, which has to stay at or above go.mod's `go` directive.
   - package-ecosystem: docker
     directory: /
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
+    groups:
+      images:
+        patterns: ["*"]

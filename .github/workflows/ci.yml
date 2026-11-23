@@ -5,6 +5,10 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  # The merge queue tests each pull request on top of the current main and
+  # needs the required check to run there too. Publishing is push-only, so a
+  # queue run never pushes an image.
+  merge_group:
 
 env:
   # The minor go.mod requires, with the patch left to setup-go so it always
