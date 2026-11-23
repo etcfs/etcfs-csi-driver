@@ -10,8 +10,8 @@ github.com/coreos/go-semver v0.3.1 h1:yi21YpKnrx1gt5R+la8n5WgS0kCrsPp33dmEyHReZr
 github.com/coreos/go-semver v0.3.1/go.mod h1:irMmmIw/7yzSRPWryHsK7EYSg09caPQL03VsM8rvUec=
 github.com/coreos/go-systemd/v22 v22.7.0 h1:LAEzFkke61DFROc7zNLX/WA2i5J8gYqe0rSj9KI28KA=
 github.com/coreos/go-systemd/v22 v22.7.0/go.mod h1:xNUYtjHu2EDXbsxz1i41wouACIwT7Ybq9o0BQhMwD0w=
-github.com/etcfs/etcfs v0.46.2 h1:cm75+/2tDIXyuucAy+E6FcpNHrFfyRvHoB+vf0A4zXI=
-github.com/etcfs/etcfs v0.46.2/go.mod h1:HpTL9S0wNNUgnugMrnE2kkbKvN40rU4Z1YfLhRwGGMU=
+github.com/etcfs/etcfs v1.1.2 h1:6Q3c7c8IpmiKKarp2ZFk2vxTKn2VJyzz55XVKp3/BzM=
+github.com/etcfs/etcfs v1.1.2/go.mod h1:9jWQPglFTMBM+XeheZlV+xcPpqn+2XWSowFcveiMrxI=
 github.com/gkampitakis/ciinfo v0.3.2 h1:JcuOPk8ZU7nZQjdUhctuhQofk7BGHuIy0c9Ez8BNhXs=
 github.com/gkampitakis/ciinfo v0.3.2/go.mod h1:1NIwaOcFChN4fa/B0hEBdAb6npDlFL8Bwx4dfRLRqAo=
 github.com/gkampitakis/go-diff v1.3.2 h1:Qyn0J9XJSDTgnsgHRdz9Zp24RaJeKMUHg2+PDZZdC4M=

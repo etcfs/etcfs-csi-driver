@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/container-storage-interface/spec v1.14.0
-	github.com/etcfs/etcfs v0.46.2
+	github.com/etcfs/etcfs v1.1.2
 	github.com/kubernetes-csi/csi-test/v5 v5.6.0
 	github.com/stretchr/testify v1.12.1
 	go.etcd.io/etcd/client/v3 v3.7.4
